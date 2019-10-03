@@ -1,25 +1,8 @@
-version: 2
-
-executors:
-  hugo:
-    docker:
-      - image: cibuilds/hugo:latest
-  git:
-    docker:
-      - image: alpine/git:latest
-
+version: 2.1
 jobs:
-  build_static:
-    executor: hugo
-    working_directory: ~/hugo
-    environment:
-      HUGO_BUILD_DIR: ./public
+  build:
+    docker:
+      - image: circleci/node:4.8.2
     steps:
       - checkout
-      - run:
-          name: Build Package
-          command: hugo
-      - persist_to_workspace:
-          root: ~/hugo
-          paths:
-            - .
+      - run: echo "hello world"
