@@ -23,11 +23,3 @@ jobs:
           root: ~/hugo
           paths:
             - .
-  publish:
-    executor: git
-    steps:
-      - attach_workspace:
-          at: /public
-      - run:
-          name: Publish Website
-          command: git clone https://github.com/blogtemporgname/blog.github.io .
