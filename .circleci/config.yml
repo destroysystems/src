@@ -9,6 +9,10 @@ jobs:
           fingerprints:
             - "cb:ad:9c:24:85:bd:1f:73:f2:ba:fc:5f:6a:f4:ec:34"
       - run:
+          name: Add Github to known_hosts
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      - run:
           name: Installing Dependencies
           command: |
             apk update
@@ -17,7 +21,7 @@ jobs:
       - run:
           name: Preparing Workspace
           command: |
-            git clone https://github.com/destroysystems/public.git
+            git clone git@github.com:destroysystems/public.git
             cd public
             make clean
             cd ..
@@ -62,12 +66,18 @@ jobs:
             apk add git
             apk add ca-certificates
             apk add openssh
+      - run:
+          name: Add Github to known_hosts
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - attach_workspace:
           at: .
       - run:
           name: Deploy Website
           command: |
             cd public
+            git config user.name "CircleCI"
+            git config user.email "circleci@destroy.systems"
             git add .
             git commit -m "Deploying website in $(date)"
             git push -u origin master
