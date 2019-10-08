@@ -55,14 +55,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Configure Git Identity
-          command: |
-            git config user.name "CircleCI"
-            git config user.email "circleci@destroy.systems"
-      - run:
           name: Deploy Website
           command: |
             cd public
+            git config user.name "CircleCI"
+            git config user.email "circleci@destroy.systems"
             git add .
             git commit -m "Deploying website in $(date)"
             git push -u origin master
