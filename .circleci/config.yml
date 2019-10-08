@@ -42,3 +42,14 @@ jobs:
       - image: alpine/git:latest
     steps:
       - run: echo hello deploy
+
+workflows:
+  build_website:
+    jobs:
+      - prepare_workspace
+      - build:
+          requires:
+            - prepare_workspace
+      - deploy:
+          requires:
+            - build
