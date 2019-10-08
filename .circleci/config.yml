@@ -3,8 +3,11 @@ version: 2.1
 jobs:
   prepare_workspace:
     docker:
-      - image: alpine/git:latest
+      - image: alpine:latest
     steps:
+      - run:
+          name: Install dependencies
+          command: apk update && apk add git && apk add make
       - run:
           name: Preparing workspace
           command: |
