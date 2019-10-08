@@ -5,6 +5,13 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
+      - run:
+          name: Installing Dependencies
+          command: |
+            apk update
+            apk add git
+            apk add make
+            apk add openssh
       - add_ssh_keys:
           fingerprints:
             - "cb:ad:9c:24:85:bd:1f:73:f2:ba:fc:5f:6a:f4:ec:34"
@@ -12,12 +19,6 @@ jobs:
           name: Add Github to known_hosts
           command: |
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-      - run:
-          name: Installing Dependencies
-          command: |
-            apk update
-            apk add git
-            apk add make
       - run:
           name: Preparing Workspace
           command: |
