@@ -44,6 +44,8 @@ jobs:
     docker:
       - image: alpine/git:latest
     steps:
+      - attach_workspace:
+          at: .
       - run: echo hello deploy
 
 workflows:
