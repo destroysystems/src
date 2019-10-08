@@ -1,8 +1,44 @@
 version: 2.1
+
 jobs:
+  prepare_workspace:
+    docker:
+      - image: alpine/git:latest
+    steps:
+      - run:
+          name: Preparing workspace
+          command: |
+            git clone https://github.com/destroysystems/public.github.io public
+            cd public
+            make clean
+            cd ..
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - public
+
   build:
     docker:
-      - image: circleci/node:4.8.2
+      - image: cibuilds/hugo:latest
+    working_directory: ~
+    environment:
+      HUGO_BUILD_DIR: ./public
     steps:
+      - run: apk update && apk add git
       - checkout
-      - run: echo "hello world"
+      - attach_workspace:
+          at: .
+      - run:
+          name: Building static files
+          command: |
+            HUGO_ENV=production hugo -v -d $HUGO_BUILD_DIR
+            htmlproofer $HUGO_BUILD_DIR --allow-hash-href --check-html --empty-alt-ignore --disable-external
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - public
+  deploy:
+    docker:
+      - image: alpine/git:latest
+    steps:
+      - run: echo hello deploy
