@@ -6,10 +6,10 @@ jobs:
       - image: alpine:latest
     steps:
       - run:
-          name: Install dependencies
+          name: Installing Dependencies
           command: apk update && apk add git && apk add make
       - run:
-          name: Preparing workspace
+          name: Preparing Workspace
           command: |
             git clone https://github.com/destroysystems/public.git
             cd public
@@ -27,12 +27,14 @@ jobs:
     environment:
       HUGO_BUILD_DIR: ./public
     steps:
-      - run: apk update && apk add git
+      - run:
+          name: Installing Dependencies
+          command: apk update && apk add git
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Building static files
+          name: Building Static Files
           command: |
             HUGO_ENV=production hugo -v -d $HUGO_BUILD_DIR
             htmlproofer $HUGO_BUILD_DIR --allow-hash-href --check-html --empty-alt-ignore --disable-external
@@ -42,10 +44,13 @@ jobs:
             - public
   deploy:
     docker:
-      - image: alpine/git:latest
+      - image: alpine:latest
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Installing Dependencies
+          command: apk update && apk add git
       - run: echo hello deploy
 
 workflows:
