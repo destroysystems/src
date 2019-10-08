@@ -44,28 +44,21 @@ jobs:
             - .
   deploy:
     docker:
-      - image: alpine:latest
+      - image: node:latest
     steps:
       - add_ssh_keys:
           fingerprints:
             - "cb:ad:9c:24:85:bd:1f:73:f2:ba:fc:5f:6a:f4:ec:34"
-      - run:
-          name: Installing Dependencies
-          command: |
-            apk update
-            apk add git
-            apk add ca-certificates
       - attach_workspace:
           at: .
       - run:
           name: Deploy Website
           command: |
+            npm install -g --silent gh-pages
             cd public
             git config user.name "CircleCI"
             git config user.email "circleci@destroy.systems"
-            git add .
-            git commit -m "Deploying website in $(date)"
-            git push -u origin master
+            gh-pages --message "[CircleCI] Deploying website in $(date)" --dist .
 
 workflows:
   build_website:
