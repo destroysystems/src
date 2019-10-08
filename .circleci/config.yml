@@ -46,6 +46,9 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "cb:ad:9c:24:85:bd:1f:73:f2:ba:fc:5f:6a:f4:ec:34"
       - run:
           name: Installing Dependencies
           command: |
