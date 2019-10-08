@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Preparing workspace
           command: |
-            git clone https://github.com/destroysystems/public.github.io public
+            git clone https://github.com/destroysystems/public.git
             cd public
             make clean
             cd ..
