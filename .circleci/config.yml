@@ -46,11 +46,14 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
-      - attach_workspace:
-          at: .
       - run:
           name: Installing Dependencies
-          command: apk update && apk add git
+          command: |
+            apk update
+            apk add git
+            apk add ca-certificates
+      - attach_workspace:
+          at: .
       - run: echo hello deploy
 
 workflows:
