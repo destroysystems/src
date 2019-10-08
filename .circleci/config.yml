@@ -56,8 +56,8 @@ jobs:
           command: |
             npm install -g --silent gh-pages
             cd public
-            git config user.name "CircleCI"
-            git config user.email "circleci@destroy.systems"
+            git config --global user.name "CircleCI"
+            git config --global user.email "circleci@destroy.systems"
             gh-pages --message "[CircleCI] Deploying website in $(date)" --dist .
 
 workflows:
