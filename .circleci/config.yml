@@ -14,7 +14,6 @@ jobs:
             apk update
             apk add git
             apk add make
-            apk add openssh
       - run:
           name: Preparing Workspace
           command: |
@@ -69,9 +68,6 @@ jobs:
           name: Deploy Website
           command: |
             cd public
-            git config user.name "CircleCI"
-            git config user.email "circleci@destroy.systems"
-            git remote set-url origin git@github.com:destroysystems/public.git
             git add .
             git commit -m "Deploying website in $(date)"
             git push -u origin master
