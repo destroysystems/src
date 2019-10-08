@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Preparing Workspace
           command: |
-            git clone git@github.com:destroysystems/public.git
+            git clone https://github.com/destroysystems/public.git
             cd public
             make clean
             cd ..
@@ -71,6 +71,7 @@ jobs:
             cd public
             git config user.name "CircleCI"
             git config user.email "circleci@destroy.systems"
+            git remote set-url origin git@github.com:destroysystems/public.git
             git add .
             git commit -m "Deploying website in $(date)"
             git push -u origin master
