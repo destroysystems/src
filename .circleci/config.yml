@@ -2,6 +2,9 @@ version: 2.1
 
 jobs:
   prepare_workspace:
+    branches:
+      only:
+        - master
     docker:
       - image: alpine:latest
     steps:
