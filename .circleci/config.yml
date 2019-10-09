@@ -2,9 +2,6 @@ version: 2.1
 
 jobs:
   prepare_workspace:
-    branches:
-      only:
-        - master
     docker:
       - image: alpine:latest
     steps:
@@ -89,7 +86,10 @@ jobs:
 workflows:
   build_website:
     jobs:
-      - prepare_workspace
+      - prepare_workspace:
+          filters:
+            branches:
+              only: master
       - build:
           requires:
             - prepare_workspace
