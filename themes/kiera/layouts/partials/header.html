@@ -33,7 +33,10 @@
         <li><a href="https://www.facebook.com/{{ .Site.Author.facebook }}"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
         {{ end }} {{ if .Site.Author.instagram }}
         <li><a href="https://instagram.com/{{ .Site.Author.instagram }}"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i></a></li>
+        {{ end }} {{ if .Site.Author.email }}
+        <li><a href="mailto:{{ .Site.Author.email }}"><i class="far fa-envelope fa-lg" aria-hidden="true"></i></a></li>
         {{ end }}
+
       </ul>
       {{ with .Site.Params.tagline }}
       <p><em>{{ . | markdownify }}</em></p>
