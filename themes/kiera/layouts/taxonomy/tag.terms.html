@@ -1,0 +1,14 @@
+{{ partial "header.html" . }}
+
+<section id="main">
+  <div>
+   <h1 id="title">{{ .Title }}</h1>
+   {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+       {{ with $.Site.GetPage (printf "/tags/%s" $name) }}
+           <a href="{{ .Permalink }}">{{ $name }}</a>
+       {{ end }}
+   {{ end }}
+  </div>
+</section>
+
+{{ partial "footer.html" . }}

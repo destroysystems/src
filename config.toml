@@ -1,0 +1,25 @@
+baseURL = "http://destroy.systems/"
+languageCode = "en-us"
+title = "destroy.systems"
+theme = "kiera"
+cannonifyurls = true
+
+paginate = 5
+
+summaryLength = 30
+enableEmoji = true
+pygmentsCodeFence = true
+
+[author]
+  github = "destroysystems"
+  email = "site@destroy.systems"
+
+[params]
+#  tagline = "Test tagline"
+
+[menu]
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 30
