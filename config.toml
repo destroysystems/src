@@ -15,4 +15,4 @@ pygmentsCodeFence = true
   email = "site@destroy.systems"
 
 [params]
-  tagline = "Test tagline"
+#  tagline = "Test tagline"
