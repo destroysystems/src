@@ -1,7 +1,15 @@
 <aside>
     <ul>
         <li>
-          <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>, {{ T "by" }} <a href='mailto:{{ .Params.email }}'>{{ .Params.author }}</a>
+          <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+        </li>
+        <li>
+          {{- with .Params.author }}
+            {{ $author := index $.Site.Data.users . }}
+            {{ $name := $author.name }}
+            {{ $email := $author.email }}
+            {{ T "by" }} <a href='mailto:{{ $email }}'>{{ $name }}</a>
+          {{ end }}
         </li>
         {{ if .Params.categories }}
         <li>
@@ -27,6 +35,5 @@
         {{ end }}
 
         <li></li>
-        <li>{{ T "readingTime" .ReadingTime }}</li>
     </ul>
 </aside>
