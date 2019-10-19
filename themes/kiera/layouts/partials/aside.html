@@ -1,7 +1,7 @@
 <aside>
     <ul>
         <li>
-            <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>, {{ T "by" }} <a href='mailto:{{ .Params.email }}'>{{ .Params.author }}</a>
         </li>
         {{ if .Params.categories }}
         <li>
@@ -26,6 +26,7 @@
         </li>
         {{ end }}
 
+        <li></li>
         <li>{{ T "readingTime" .ReadingTime }}</li>
     </ul>
 </aside>

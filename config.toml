@@ -1,0 +1,17 @@
+baseURL = "http://destroy.systems/"
+languageCode = "en-us"
+title = "destroy.systems"
+theme = "kiera"
+cannonifyurls = true
+
+paginate = 3
+
+summaryLength = 30
+enableEmoji = true
+pygmentsCodeFence = true
+
+[author]
+  github = "destroysystems"
+
+[params]
+  tagline = "Test tagline"
