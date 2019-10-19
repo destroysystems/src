@@ -4,7 +4,7 @@ title = "destroy.systems"
 theme = "kiera"
 cannonifyurls = true
 
-paginate = 3
+paginate = 5
 
 summaryLength = 30
 enableEmoji = true
@@ -16,3 +16,16 @@ pygmentsCodeFence = true
 
 [params]
 #  tagline = "Test tagline"
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "Posts"
+    url = "/posts/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 30
