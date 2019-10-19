@@ -19,12 +19,6 @@ pygmentsCodeFence = true
 
 [menu]
   [[menu.main]]
-    identifier = "posts"
-    name = "Posts"
-    url = "/posts/"
-    weight = 20
-
-  [[menu.main]]
     identifier = "tags"
     name = "Tags"
     url = "/tags/"
