@@ -1,3 +1,3 @@
 ---
-author: "Admin"
+author: "admin"
 ---
