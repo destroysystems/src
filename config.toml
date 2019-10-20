@@ -23,3 +23,7 @@ pygmentsCodeFence = true
     name = "Tags"
     url = "/tags/"
     weight = 30
+
+[taxonomies]
+  author = "authors"
+  tag = "tags"

@@ -16,20 +16,23 @@
    {{ with .OutputFormats.Get "RSS" }}
        {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
    {{ end }}
+   {{ $author := .Params.author }}
    {{ range (where .Site.Pages "Section" "posts") }}
-     <item>
-       <title>{{ .Title }}</title>
-       <link>{{ .Permalink }}</link>
-       <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
-       <author>
-         {{ range .Params.authors }}
-           {{ $author := index $.Site.Data.authors . }}
-           {{ $author.email }} ({{ $author.name }}),
-         {{ end }}
-       </author>
-       <guid>{{ .Permalink }}</guid>
-       <description>{{ .Content | html }}</description>
-     </item>
+     {{ if in .Params.authors $author }}
+       <item>
+         <title>{{ .Title }}</title>
+         <link>{{ .Permalink }}</link>
+         <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+         <author>
+           {{ range .Params.authors }}
+             {{ $author := index $.Site.Data.authors . }}
+             {{ $author.email }} ({{ $author.name }}),
+           {{ end }}
+         </author>
+         <guid>{{ .Permalink }}</guid>
+         <description>{{ .Content | html }}</description>
+       </item>
+     {{ end }}
    {{ end }}
  </channel>
 </rss>

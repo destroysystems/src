@@ -4,11 +4,11 @@
           <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>
         </li>
         <li>
-          {{- with .Params.author }}
-            {{ $author := index $.Site.Data.users . }}
+          {{- range .Params.authors }}
+            {{ $author := index $.Site.Data.authors . }}
             {{ $name := $author.name }}
             {{ $email := $author.email }}
-            {{ T "by" }} <a href='mailto:{{ $email }}'>{{ $name }}</a>
+            <a href='/authors/{{ . }}'>{{ $name }}</a>
           {{ end }}
         </li>
         {{ if .Params.categories }}
