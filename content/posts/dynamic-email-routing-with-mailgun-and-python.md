@@ -1,7 +1,7 @@
 ---
 title: "Dynamic Email Routing With Mailgun and Python"
 date: 2019-10-19T16:50:58-03:00
-draft: true
+draft: false
 authors: ['mauricio']
 tags: []
 ---
@@ -25,8 +25,22 @@ Yes, we can! Among all of the features Mailgun offers, we have some interesting 
 
 # Implementation
 
-It can be pretty much like this:
+PS: This article focuses on creating the service itself, but not hosting it somewhere. This subject will be covered in a future post (but it will involve Terraform, Google Cloud and some Serverless magic).
 
-{{  }}
+The idea is to have a flow pretty much like this:
+
+{{< imgur 9lF7nGN >}}
+
+We'll create a single rule on Mailgun, to be processed after all of the existing rules, and set it like this:
+
+{{< imgur 0xVXjlb >}}
+
+Be sure to set a priority higher than the rules that you already have. This has to be the last rule to run, otherwise it will route emails that you wanted to apply a different filter. See below:
+
+{{< imgur q5M1sk5 >}}
+
+Cool, we have our rules properly set. Now, let's move on to the actual processing piece, which will route stuff for us. We'll use Flask to handle the POST request and send it to a function that we'll write. This function will be responsible for processing the request received, extracting the important information and sending to our account. (The separation between the Flask part and the actual function is intentional. It will be more explored in the future post about hosting the function.)
+
+
 
 # Final results
