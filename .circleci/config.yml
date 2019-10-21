@@ -38,9 +38,6 @@ jobs:
     environment:
       HUGO_BUILD_DIR: ./public
     steps:
-      - run:
-          name: Installing Dependencies
-          command: apk update && apk add git
       - checkout
       - attach_workspace:
           at: .
