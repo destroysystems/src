@@ -12,7 +12,7 @@ pygmentsCodeFence = true
 
 [author]
   github = "destroysystems"
-  email = "site@destroy.systems"
+  email = "admin@destroy.systems"
 
 [params]
 #  tagline = "Test tagline"
