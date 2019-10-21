@@ -1,15 +1,16 @@
 <aside>
     <ul>
         <li>
-          <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">{{ .Date.Format "Jan 2, 2006" }}</time>,
         </li>
-        <li>
-          {{- range .Params.authors }}
+        <li> by
+          {{ range $i, $e := .Params.authors -}}
             {{ $author := index $.Site.Data.authors . }}
-            {{ $name := $author.name }}
+            {{- $name := $author.name -}}
             {{ $email := $author.email }}
-            <a href='/authors/{{ . }}'>{{ $name }}</a>
-          {{ end }}
+            {{- if $i }}, {{ end }}
+            <a href='/authors/{{ . }}'>{{ $name -}}</a>
+          {{- end -}}
         </li>
         {{ if .Params.categories }}
         <li>
