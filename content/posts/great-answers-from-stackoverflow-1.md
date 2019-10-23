@@ -1,7 +1,7 @@
 ---
 title: "Great Answers From StackOverflow #1"
 date: 2019-10-23T07:12:52-03:00
-draft: true
+draft: false
 authors: ['mauricio']
 tags: ['python', 'stackoverflow']
 ---
