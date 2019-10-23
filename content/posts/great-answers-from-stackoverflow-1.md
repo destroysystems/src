@@ -1,11 +1,11 @@
 ---
 title: "Great Answers From StackOverflow #1"
 date: 2019-10-23T07:12:52-03:00
-draft: false
+draft: true
 authors: ['mauricio']
 tags: ['python', 'stackoverflow']
 ---
-[This post](https://stackoverflow.com/questions/2489669/function-parameter-types-in-python) provided an excellent explanation about Python's strong but dynamic typing. Python typing classification confused me much more times than I'd like to admit, and I still see people having trouble with it nowadays. It's worth the 45 seconds reading and a couple minutes thinking.
+Early today I was grading an assignment from a job application and, after having some doubts about the need to explicitly designate types in python, I found [this post](https://stackoverflow.com/questions/2489669/function-parameter-types-in-python), which provided an excellent explanation about Python's strong but dynamic typing. Over the course of my career as a developer, Python's typing classification confused me much more times than I'd like to admit, and I still see people having trouble with it nowadays. So, it's worth the 45 seconds reading and a couple minutes thinking.
 
 ---
 
