@@ -5,7 +5,7 @@ theme = "kiera"
 cannonifyurls = true
 
 pygmentsCodeFences = true
-pygmentsStyle = "vim"
+pygmentsStyle = "monokai"
 
 paginate = 5
 
