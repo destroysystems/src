@@ -1,46 +1,157 @@
 ---
 title: "Dynamic Email Routing With Mailgun and Python"
-date: 2019-10-19T16:50:58-03:00
+date: 2019-10-26T10:15:52-03:00
 draft: false
 authors: ['mauricio']
-tags: []
+tags: ['automation', 'mailgun', 'SMTP', 'custom domain']
 ---
+# Index
 
-# The problem
-[destroy.systems](/) is not a huge company. Actually, it's just [some folks](/authors) who want to write about technical stuff. Not being a huge company also means that we don't have lots of resources to spare. We bought a domain and that's already a lot, considering that it won't generate any revenue. But, anyway, we enjoy having some luxury, like our own customized emails.
+This is a three part article. The index below will be updated with the respective links as soon as the upcoming parts are completed an published.
 
-# What do we want to reach?
-Having our domain, the first immediate step was to configure [Mailgun](www.mailgun.com), a service that, among other things, redirects emails based on rules. This means the following, if I send an email to mauricio@destroy.systems it will be redirected to my personal inbox, where I can create rules and save them in specific folders. As far as I know, we can create as much redirection rules as we want. But there are two problems:
-- The creation of such rules is manual (there are some APIs that can be used as well, but for this case let's consider that it's manual)
-- We can't have dynamic rules
+1. [Creating the Base Function and Receiving POSTs](.)
+2. Automated Hosting of the Cloud Function
+3. Routing Received Emails
 
-## But what exactly are _dynamic rules_?
+# What we want to achieve?
+[destroy.systems](/) is not a huge company. Actually, it's just [some folks](/authors) who want to write about technical stuff and share some interesting experiments. Not being a huge company also means that we don't have lots of resources to spare, we bought a domain and that's already a lot, considering that it won't generate any revenue. Having the domain, we would love to have some custom emails but, for sure, on the cheap side. 
 
-I don't even know if this is a thing, but imagine the following: Let's say that my email is personalemail@gmail.com, to which we can [add some extra information](https://thenextweb.com/google/2017/08/17/how-the-plus-sign-can-save-your-gmail-inbox-from-becoming-a-pit-of-doom/) in the address, by adding _+something_ after the username. So, if we wanted to track our emails from Github, for example, we can subscribe to github with personalemail+github@gmail.com, and with that we can filter our emails by tracking those that were sent to that address, instead of my default one.
-Now imagine that I want to create custom addresses for any services that I have, related to [destroy.systems](/), such as GitHub, CircleCI, Mailgun and any others. I'd love them to be nameofservice@domain, and then redirect them to personalemail+nameofservice@gmail.com. This is easily achievable by creating new rules on mailgun, but considering that the username part would be exactly the same as the tag in my personal email, couldn't we create an automated way of doing that?
+Also, we would like to have addresses for services as well (github@destroy.systems, circleci@destroy.systems, for example) and have this automatically routed to somewhere else.
 
-# Available tools
+Then you'll say: _you can actually do that, there's this fancy tool called [Mailgun](https://www.mailgun.com) that probably achieves what you folks want._
 
-Yes, we can! Among all of the features Mailgun offers, we have some interesting things like redirecting received emails to an API through a POST method, where the email contents are in the request body, and also sending emails not only with SMTP, but through its own API as well. By combining these two features, we can create an additional layer in the redirection process.
+True. We use it, and it's awesome. But stay with me for a second.
 
-# Implementation
+Let's say that my email is personalemail@gmail.com, to which we can [add some extra information](https://thenextweb.com/google/2017/08/17/how-the-plus-sign-can-save-your-gmail-inbox-from-becoming-a-pit-of-doom/) in the address, by adding _+something_ after the username. So, if we wanted to track our emails from Github, for example, we can subscribe to github with personalemail+github@gmail.com, and with that we can filter our emails by tracking those that were sent to that address, instead of my default one.
 
-PS: This article focuses on creating the service itself, but not hosting it somewhere. This subject will be covered in a future post (but it will involve Terraform, Google Cloud and some Serverless magic).
+This is such a great feature that Gmail offers. Now imagine if I wanted to do something similar _with my own domain_. Or, even better, create addresses __on the fly__. I'd love to have an address nameofservice@destroy.systems, and then redirect them to personalemail+nameofservice@gmail.com. This is easily achievable by creating new rules on mailgun, the problem is that the receiver's address cannot be parametrized, so it cannot be automated. We need to use something else.
 
-The idea is to have a flow pretty much like this:
+# What are the tools available?
+
+Mailgun has an API. By using this and some scripting we can achieve what we want. Then, if we host this script somewhere available 24/7, we can have it permanently accessible. Think about _cloud_, _serverless_ and all of these fancy words. We'll talk about in in part 2.
+
+The idea is to use Mailgun to capture all of the emails, forward it to a service that we created and then, within this service, we can modify the email and, with Mailgun API, send it to our personal email account, adding the required tags (or that _+something_) that will allow us to filter what we want:
 
 {{< imgur 9lF7nGN >}}
 
-We'll create a single rule on Mailgun, to be processed after all of the existing rules, and set it like this:
+First, we need to configure a route to catch all emails and forward it to an address (use a dummy address for now, we'll have an actual one soon):
 
 {{< imgur 0xVXjlb >}}
 
-Be sure to set a priority higher than the rules that you already have. This has to be the last rule to run, otherwise it will route emails that you wanted to apply a different filter. See below:
+Then, set the priority number higher than all the other existing rules (it will be the last rule to be executed): 
 
 {{< imgur q5M1sk5 >}}
 
-Cool, we have our rules properly set. Now, let's move on to the actual processing piece, which will route stuff for us. We'll use Flask to handle the POST request and send it to a function that we'll write. This function will be responsible for processing the request received, extracting the important information and sending to our account. (The separation between the Flask part and the actual function is intentional. It will be more explored in the future post about hosting the function.)
+Okay, we have the rules set. It's coding time.
+
+To keep things pretty, create a virtualenv and add our requirements:
+
+{{< highlight bash >}}
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+$ pip install flask
+$ pip freeze > requirements.txt
+{{</ highlight >}}
+
+After doing that, we'll have a `requirements.txt` quite similar to the one below:
+
+{{< highlight text >}}
+Click==7.0
+Flask==1.1.1
+itsdangerous==1.1.0
+Jinja2==2.10.3
+MarkupSafe==1.1.1
+Werkzeug==0.16.0
+{{</ highlight >}}
+
+Having our virtualenv properly set, with the requirements installed and listed, let's create a Flask wrapper for our function, to deal with HTTP requests. 
+
+{{< highlight python "linenos=inline" >}}
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def call():
+    return "Hello World!"
+{{</ highlight >}}
+
+If we run that with the following commands, we'll be able to see a `Hello World!` message in the browser:
+
+{{< highlight bash >}}
+$ FLASK_APP=app.py flask run
+ * Serving Flask app "app.py"
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+{{</ highlight >}}
+
+Cool, we're dealing with HTTP requests. Let's move on to the actual function. If you're curious, take a look at the [Mailgun API](https://documentation.mailgun.com/en/latest/api_reference.html) to understand better what it's capable of. Most of what we'll use, if not all, is in [here](https://documentation.mailgun.com/en/latest/api-sending.html#sending), I'll move straight to it.
+
+Let's create a new file, which I'll call `process.py`, to write our function. It will start simple as this:
+
+{{< highlight python "linenos=inline" >}}
+def process():
+    return "Hello World!"
+{{</ highlight >}}
+
+And now, in our `app.py`, instead of just returning a string, let's import this function and call it:
+
+{{< highlight python "linenos=inline,hl_lines=8" >}}
+from process import process
+
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def call():
+    return process()
+{{</ highlight >}}
+
+If all went well, we're still reading a `Hello World!` message in the browser. Cool.
+
+To deal with the actual contents of our emails, we'll need to use an [object from Flask that allows us to deal with requests](https://flask.palletsprojects.com/en/1.1.x/api/#flask.Request), called `request`. So, our `app.py` will look like this (attention to the imports):
+
+{{< highlight python "linenos=inline,hl_lines=3 8" >}}
+from process import process
+
+from flask import Flask, request
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def call():
+    return process(request)
+{{</ highlight >}}
+
+And our `process` function now has to receive it:
 
 
+{{< highlight python "linenos=inline,hl_lines=1" >}}
+def process(request):
+    return "Hello World!"
+{{</ highlight >}}
 
-# Final results
+All good, all great. But nothing changed in our browser, we still see the good ol' `Hello World!`. Let's do some stuff with the `request` object. First, to prepare our function to receive data from Mailgun, we need to be able to receive `POST`, and not only `GET`. So, we make a small change in our `app.py`, like below:
+
+{{< highlight python "linenos=inline,hl_lines=1,linenostart=6" >}}
+@app.route('/', methods=['GET', 'POST'])
+def call():
+    return process(request)
+{{</ highlight >}}
+
+We're leaving the `GET` only for testing purposes, as Mailgun sends only `POST`.
+
+[Here](https://flask.palletsprojects.com/en/1.1.x/api/#flask.Request) we can find the documentation for the `request` object. For this application, all the information we need will be on `request.form`, because Mailgun sends it as form data. To make it easier to handle the information, we can extract just the form data. (Flask relies on the [Werkzeug WSGI web application library](https://werkzeug.palletsprojects.com/en/0.16.x/), so the output of `form` is actually an [`ImmutableMultiDict`](https://werkzeug.palletsprojects.com/en/0.16.x/datastructures/#werkzeug.datastructures.ImmutableMultiDict) object. We can use the `to_dict()` method to convert it to a simple dict.) And, after that, we can start gathering the info that we'll need. It won't be much more than the actual message, subject and the sender's email for now.
+
+So, our `process.py` file will look like this, extracting the info from the request and returning as a nicely formatted string:
+
+{{< highlight python "linenos=inline" >}}
+def process(request):
+    sender = str(data['Sender'])
+    receiver = str(data['To'])
+    subject = str(data['Subject'])
+    message = str(data['body-html'])
+    response = 'From: {}\nTo: {}\nSubject: {}\nMessage: {}'.format(sender, receiver, subject, message)
+    return response
+{{</ highlight >}}
