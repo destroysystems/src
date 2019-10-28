@@ -71,7 +71,7 @@ Werkzeug==0.16.0
 
 ## Starting the basic app and Flask wrapper
 
-Having our virtualenv properly set, with the requirements installed and listed, let's create a Flask wrapper for our function, to deal with HTTP requests. 
+Having our virtualenv properly set, with the requirements installed and listed, let's create a Flask wrapper for our function, to deal with HTTP requests. Creating this wrapper now is important to simulate how our app will behave when it's hosted in the almighty cloud.
 
 {{< highlight python "linenos=inline" >}}
 from flask import Flask
@@ -149,18 +149,6 @@ def process(request):
     return "Hello World!"
 {{</ highlight >}}
 
-## Drop the GETs, get the POSTs
-
-All good, all great. But nothing changed in our browser, we still see the good ol' `Hello World!`. Let's do some stuff with the `request` object. First, to prepare our function to receive data from Mailgun, we need to be able to receive `POST`, and not only `GET`. So, we make a small change in our `app.py`, like below:
-
-{{< highlight python "linenos=inline,hl_lines=1,linenostart=6" >}}
-@app.route('/', methods=['GET', 'POST'])
-def call():
-    return process(request)
-{{</ highlight >}}
-
-We're leaving the `GET` only for testing purposes, as Mailgun sends only `POST`.
-
 ## Serious business (?)
 
 From this point on, we'll need to receive data in a similar way to what we should receive from Mailgun. As our app isn't reachable by Mailgun servers yet, we need to simulate this data somehow. I went the extra mile, ran some requests from Mailgun and, at this point, I believe that I can accurately simulate their requests with a `curl` command, which you can see and copy from the gist below. If at any point I notice that it's not accurate, I'll update the gist. So, starting now, we'll no longer just `curl http://127.0.0.1:5000`, we'll run the gist.
@@ -175,6 +163,18 @@ $ curl -o curl.sh -L https://git.io/JeuUh
 $ chmod +x curl.sh
 
 {{</ highlight >}}
+
+## Drop the GETs, get the POSTs
+
+All good, all great. But nothing changed in our browser, we still see the good ol' `Hello World!`. Let's do some stuff with the `request` object. First, to prepare our function to receive data from Mailgun, we need to be able to receive `POST`, and not only `GET`. So, we make a small change in our `app.py`, like below:
+
+{{< highlight python "linenos=inline,hl_lines=1,linenostart=6" >}}
+@app.route('/', methods=['GET', 'POST'])
+def call():
+    return process(request)
+{{</ highlight >}}
+
+We're leaving the `GET` only for testing purposes, as Mailgun sends only `POST`.
 
 [Here](https://flask.palletsprojects.com/en/1.1.x/api/#flask.Request) we can find the documentation for the `request` object. For this application, all the information we need will be on `request.form`, because Mailgun sends it as form data. To make it easier to handle the information, we can extract just the form data. (Flask relies on the [Werkzeug WSGI web application library](https://werkzeug.palletsprojects.com/en/0.16.x/), so the output of `form` is actually an [`ImmutableMultiDict`](https://werkzeug.palletsprojects.com/en/0.16.x/datastructures/#werkzeug.datastructures.ImmutableMultiDict) object. We can use the `to_dict()` method to convert it to a simple dictionary.) And, after that, we can start gathering the info that we'll need. For now, we won't use more than the actual message, subject and the sender and receiver email.
 
@@ -206,4 +206,4 @@ Message:  <html>  <head>    <meta content=...
 
 It feels like a lot is missing, right? That's because it is.
 
-We've gone a long way already, and by now we're ready to begin receiving requests from Mailgun. Unfortunately, our app isn't publicly available yet, it only runs in our machines. So, in the next part, we'll focus on it, our dynamic router will run in the cloud, and we'll do it in a way that the deploy process is completely automated. If we ever need to change anything in the code of our app, we'll be able to do it with a single commit to github.
+We've gone a long way already, and by now we're ready to begin receiving requests from Mailgun. Unfortunately, our app isn't publicly available yet, it only runs in our machines. So, in the next part, we'll focus on it, our dynamic router will run in the cloud, and we'll do it in a way that the deploy process is completely automated. If we ever need to change anything in the code of our app, we'll be able to do it with a single commit.
