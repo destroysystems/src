@@ -4,11 +4,13 @@ title = "destroy.systems"
 theme = "kiera"
 cannonifyurls = true
 
+pygmentsCodeFences = true
+pygmentsStyle = "monokai"
+
 paginate = 5
 
 summaryLength = 30
 enableEmoji = true
-pygmentsCodeFence = true
 
 [author]
   github = "destroysystems"
