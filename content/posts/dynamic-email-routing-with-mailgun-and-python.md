@@ -15,9 +15,9 @@ This is a three part article. The index below will be updated with the respectiv
 
 # What do we want to achieve?
 
-[destroy.systems](/) is not a huge company. Actually, it's just [some folks](/authors) who want to write about technical stuff and share some interesting experiments. Not being a huge company also means that we don't have lots of resources to spare, we bought a domain and that's already a lot, considering that it won't generate any revenue. Having the domain, we would love to have some custom emails but, for sure, on the cheap side. 
+[destroy.systems](/) is not a huge company. Actually, it's just [some folks](/authors) who want to write about technical stuff and share interesting experiments. Not being a huge company also means that we don't have lots of resources to spare, we bought a domain and that's already a lot, considering that it won't generate any revenue. Having the domain, we would love to have some custom emails but, for sure, on the cheap side.
 
-Also, we would like to have addresses for services as well (github@destroy.systems, circleci@destroy.systems, for example) and have this automatically routed to somewhere else.
+We would like to have addresses for services as well (github@destroy.systems, circleci@destroy.systems, for example) and have this automatically routed to somewhere else.
 
 Then you'll say: _you can actually do that, there's this fancy tool called [Mailgun](https://www.mailgun.com) that probably achieves what you folks want._
 
@@ -25,11 +25,11 @@ True. We use it, and it's awesome. But stay with me for a second.
 
 Let's say that my email is personalemail@gmail.com, to which we can [add some extra information](https://thenextweb.com/google/2017/08/17/how-the-plus-sign-can-save-your-gmail-inbox-from-becoming-a-pit-of-doom/) in the address, by adding _+something_ after the username. So, if we wanted to track our emails from Github, for example, we can subscribe to github with personalemail+github@gmail.com, and with that we can filter our emails by tracking those that were sent to that address, instead of my default one.
 
-This is such a great feature that Gmail offers. Now imagine if I wanted to do something similar _with my own domain_. Or, even better, create addresses __on the fly__. I'd love to have an address nameofservice@destroy.systems, and then redirect them to personalemail+nameofservice@gmail.com. This is easily achievable by creating new rules on mailgun, the problem is that the receiver's address cannot be parametrized, so it cannot be automated. We need to use something else.
+This is such a great feature that Gmail offers. Now imagine if I wanted to do something similar _with my own domain_. Or, even better, create addresses __on the fly__. I'd love to have an address nameofservice@destroy.systems, and then redirect them to personalemail+nameofservice@gmail.com. This is easily achievable by creating new rules on mailgun, the problem is that we would need to create a new rule for every new service. And we couldn't even have a generic case, as the receiver's address cannot be parametrized, everything would have to go to the same address. We need to use something else.
 
 # What are the tools available?
 
-Mailgun has an API. By using this and some scripting we can achieve what we want. Then, if we host this script somewhere available 24/7, we can have it permanently accessible. Think about _cloud_, _serverless_ and all of these fancy words. We'll talk about in in part 2.
+Mailgun has an API. By using this and some scripting we can achieve what we want. Then, if we host this script somewhere, we can have it permanently accessible. Think about _cloud_, _serverless_ and all of these fancy words. We'll talk about in in part 2.
 
 The idea is to use Mailgun to capture all of the emails, forward it to a service that we created and then, within this service, we can modify the email and, with Mailgun API, send it to our personal email account, adding the required tags (or that _+something_) that will allow us to filter what we want:
 
@@ -178,7 +178,7 @@ $ chmod +x curl.sh
 
 {{</ highlight >}}
 
-[Here](https://flask.palletsprojects.com/en/1.1.x/api/#flask.Request) we can find the documentation for the `request` object. For this application, all the information we need will be on `request.form`, because Mailgun sends it as form data. To make it easier to handle the information, we can extract just the form data. (Flask relies on the [Werkzeug WSGI web application library](https://werkzeug.palletsprojects.com/en/0.16.x/), so the output of `form` is actually an [`ImmutableMultiDict`](https://werkzeug.palletsprojects.com/en/0.16.x/datastructures/#werkzeug.datastructures.ImmutableMultiDict) object. We can use the `to_dict()` method to convert it to a simple dict.) And, after that, we can start gathering the info that we'll need. It won't be much more than the actual message, subject and the sender's email for now.
+[Here](https://flask.palletsprojects.com/en/1.1.x/api/#flask.Request) we can find the documentation for the `request` object. For this application, all the information we need will be on `request.form`, because Mailgun sends it as form data. To make it easier to handle the information, we can extract just the form data. (Flask relies on the [Werkzeug WSGI web application library](https://werkzeug.palletsprojects.com/en/0.16.x/), so the output of `form` is actually an [`ImmutableMultiDict`](https://werkzeug.palletsprojects.com/en/0.16.x/datastructures/#werkzeug.datastructures.ImmutableMultiDict) object. We can use the `to_dict()` method to convert it to a simple dictionary.) And, after that, we can start gathering the info that we'll need. For now, we won't use more than the actual message, subject and the sender and receiver email.
 
 So, our `process.py` file will look like this, extracting the info from the request and returning as a nicely formatted string:
 
@@ -190,6 +190,18 @@ def process(request):
     message = str(data['body-html'])
     response = 'From: {}\nTo: {}\nSubject: {}\nMessage: {}'.format(sender, receiver, subject, message)
     return response
+{{</ highlight >}}
+
+Now, if we run our app and, in another terminal, we run the `curl.sh` script from the gist, this is what we should see:
+
+{{< highlight bash >}}
+
+$ ./curl.sh
+From:  bob@domain.com
+To:  Alice <alice@domain.com>
+Subject:  Re: Sample POST request
+Message:  <html>  <head>    <meta content=...
+
 {{</ highlight >}}
 
 # Wrapping up (already?)
