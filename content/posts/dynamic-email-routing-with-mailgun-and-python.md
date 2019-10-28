@@ -1,6 +1,6 @@
 ---
 title: "Dynamic Email Routing With Mailgun and Python"
-date: 2019-10-26T10:15:52-03:00
+date: 2019-10-28T12:50:52-03:00
 draft: false
 authors: ['mauricio']
 tags: ['automation', 'mailgun', 'SMTP', 'custom domain']
