@@ -13,7 +13,7 @@ This is a three part article. The index below will be updated with the respectiv
 2. Automated Hosting of the Cloud Function
 3. Routing Received Emails
 
-# What we want to achieve?
+# What do we want to achieve?
 
 [destroy.systems](/) is not a huge company. Actually, it's just [some folks](/authors) who want to write about technical stuff and share some interesting experiments. Not being a huge company also means that we don't have lots of resources to spare, we bought a domain and that's already a lot, considering that it won't generate any revenue. Having the domain, we would love to have some custom emails but, for sure, on the cheap side. 
 
