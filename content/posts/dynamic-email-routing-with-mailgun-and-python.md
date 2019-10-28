@@ -27,7 +27,7 @@ This is such a great feature that Gmail offers. Now imagine if I wanted to do so
 
 # What are the tools available?
 
-Mailgun has an API. By using this and some scripting we can achieve what we want. Then, if we host this script somewhere, we can have it permanently accessible. Think about _cloud_, _serverless_ and all of these fancy words. We'll talk about in in part 2.
+Mailgun has an API. By using this and some scripting we can achieve what we want. Then, if we host this script somewhere, we can have it permanently accessible. Think about _cloud_, _serverless_ and all of these fancy words. We'll talk about that in part 2.
 
 The idea is to use Mailgun to capture all of the emails, forward it to a service that we created and then, within this service, we can modify the email and, with Mailgun API, send it to our personal email account, adding the required tags (or that _+something_) that will allow us to filter what we want:
 
