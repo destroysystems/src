@@ -15,7 +15,7 @@ This is a three part article. The index below will be updated with the respectiv
 
 # What do we want to achieve?
 
-[destroy.systems](/) is not a huge company. Actually, it's just [some folks](/authors) who want to write about technical stuff and share interesting experiments. Not being a huge company also means that we don't have lots of resources to spare, we bought a domain and that's already a lot, considering that it won't generate any revenue. Having the domain, we would love to have some custom emails but, for sure, on the cheap side.
+[destroy.systems](/) is not a huge company. It's not even a company. Actually, it's just [some folks](/authors) who want to write about technical stuff and share interesting experiments. Not being a huge company also means that we don't have lots of resources to spare, we bought a domain and that's already a lot, considering that it won't generate any revenue. Having the domain, we would love to have some custom emails but, for sure, on the cheap side.
 
 We would like to have addresses for services as well (github@destroy.systems, circleci@destroy.systems, for example) and have this automatically routed to somewhere else.
 
