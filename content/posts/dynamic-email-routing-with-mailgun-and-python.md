@@ -10,7 +10,7 @@ tags: ['automation', 'mailgun', 'SMTP', 'custom domain']
 This is a three part article. The index below will be updated with the respective links as soon as the upcoming parts are completed an published.
 
 1. [Creating the Base Function and Receiving POSTs](.)
-2. Automated Hosting of the Cloud Function
+2. [Automated Hosting of the Cloud Function](../deploying-scripts-in-the-cloud-with-terraform-and-gcp-but-other-cloud-providers-should-work-just-fine)
 3. Routing Received Emails
 
 # What do we want to achieve?
