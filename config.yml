@@ -1,0 +1,6 @@
+baseURL: https://destroy.systems/
+languageCode: en-us
+title: destroy.systems
+theme: PaperMod
+paginate: 5
+
